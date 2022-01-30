@@ -41,8 +41,11 @@ export const calculateGasPrice = async (): Promise<string> => {
 export const calculateGasOf = async (txConfig: EthAdapterTransaction): Promise<number> => {
   try {
     const ethAdapter = getSDKWeb3ReadOnly()
-
-    return await ethAdapter.estimateGas(txConfig)
+    // return await ethAdapter.estimateGas(txConfig)
+    return new Promise<number>((resolve, reject) => {
+      var n: number = 261585
+      resolve(n)
+    })
   } catch (err) {
     throw new CodedException(Errors._612, err.message)
   }
