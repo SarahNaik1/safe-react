@@ -84,7 +84,7 @@ const Sidebar = ({
         <List items={items} />
       </>
     ) : null}
-    <HelpContainer>
+    {/* <HelpContainer>
       {!IS_PRODUCTION && safeAddress && (
         <>
           <StyledDivider />
@@ -99,7 +99,7 @@ const Sidebar = ({
       <HelpCenterLink href="https://help.gnosis-safe.io/en/" target="_blank" title="Help Center of Gnosis Safe">
         <IconText text="HELP CENTER" iconSize="md" textSize="md" color="placeHolder" iconType="question" />
       </HelpCenterLink>
-    </HelpContainer>
+    </HelpContainer> */}
   </>
 )
 
