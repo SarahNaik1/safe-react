@@ -107,7 +107,7 @@ const useSidebarItems = (): ListItemType[] => {
         label: 'ASSETS',
         iconType: 'assets',
         href: currentSafeRoutes.ASSETS_BALANCES,
-        subItems: assetsSubItems,
+        // subItems: assetsSubItems,
       }),
       makeEntryItem({
         label: 'TRANSACTIONS',
@@ -119,18 +119,18 @@ const useSidebarItems = (): ListItemType[] => {
         iconType: 'addressBook',
         href: currentSafeRoutes.ADDRESS_BOOK,
       }),
-      makeEntryItem({
-        disabled: !safeAppsEnabled,
-        label: 'Apps',
-        iconType: 'apps',
-        href: currentSafeRoutes.APPS,
-      }),
-      makeEntryItem({
-        label: 'Settings',
-        iconType: 'settings',
-        href: currentSafeRoutes.SETTINGS_DETAILS,
-        subItems: settingsSubItems,
-      }),
+      // makeEntryItem({
+      //   disabled: !safeAppsEnabled,
+      //   label: 'Apps',
+      //   iconType: 'apps',
+      //   href: currentSafeRoutes.APPS,
+      // }),
+      // makeEntryItem({
+      //   label: 'Settings',
+      //   iconType: 'settings',
+      //   href: currentSafeRoutes.SETTINGS_DETAILS,
+      //   subItems: settingsSubItems,
+      // }),
     ]
   }, [
     featuresEnabled,
