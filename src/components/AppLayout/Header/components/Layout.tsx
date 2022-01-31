@@ -13,7 +13,7 @@ import Img from 'src/components/layout/Img'
 import Row from 'src/components/layout/Row'
 import { headerHeight, md, screenSm, sm } from 'src/theme/variables'
 import { useStateHandler } from 'src/logic/hooks/useStateHandler'
-import SafeLogo from '../assets/gnosis-safe-multisig-logo.svg'
+import SafeLogo from '../assets/hsbc-logo.png'
 import { WELCOME_ROUTE } from 'src/routes/routes'
 import WalletSwitch from 'src/components/WalletSwitch'
 import Divider from 'src/components/layout/Divider'
@@ -103,6 +103,9 @@ const Layout = ({ classes, providerDetails, providerInfo }) => {
           <Img alt="Gnosis Safe" height={36} src={SafeLogo} testId="heading-gnosis-logo" id="safe-logo" />
         </Link>
       </Col>
+      <Col middle="xs" start="xs">
+        <h3>Digital Assets Safe - ADMIN</h3>
+      </Col>
 
       <Spacer />
 
@@ -130,7 +133,7 @@ const Layout = ({ classes, providerDetails, providerInfo }) => {
         }
       />
 
-      <NetworkSelector open={openNetworks} toggle={toggleNetworks} clickAway={clickAwayNetworks} />
+      {/* <NetworkSelector open={openNetworks} toggle={toggleNetworks} clickAway={clickAwayNetworks} /> */}
     </Row>
   )
 }
