@@ -6,19 +6,19 @@ const items: ListItemType[] = [
     label: 'Assets',
     icon: <ListIcon type="assets" />,
     href: '#',
-    subItems: [
-      {
-        icon: <ListIcon type="assets" />,
-        label: 'Coins',
-        href: '#',
-      },
-      {
-        icon: <ListIcon type="collectibles" />,
-        selected: true,
-        label: 'Collectives',
-        href: '#',
-      },
-    ],
+    // subItems: [
+    //   {
+    //     icon: <ListIcon type="assets" />,
+    //     label: 'Coins',
+    //     href: '#',
+    //   },
+    //   {
+    //     icon: <ListIcon type="collectibles" />,
+    //     selected: true,
+    //     label: 'Collectives',
+    //     href: '#',
+    //   },
+    // ],
   },
   {
     label: 'Transactions',
