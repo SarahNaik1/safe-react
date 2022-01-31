@@ -65,7 +65,7 @@ const Balances = (): ReactElement => {
         </Col>
 
         <Col end="sm" sm={6} xs={12}>
-          {balancesSection === SECTION_NAME.coins && <CurrencyDropdown testId={'balances-currency-dropdown'} />}
+          {/* {balancesSection === SECTION_NAME.coins && <CurrencyDropdown testId={'balances-currency-dropdown'} />} */}
         </Col>
       </Menu>
 
