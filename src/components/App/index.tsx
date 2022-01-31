@@ -126,7 +126,7 @@ const App: React.FC = ({ children }) => {
           )}
         </>
       </SnackbarProvider>
-      <CookiesBanner />
+      {/* <CookiesBanner /> */}
     </Frame>
   )
 }
