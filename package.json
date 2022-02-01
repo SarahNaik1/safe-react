@@ -15,7 +15,7 @@
     "name": "Gnosis Team",
     "email": "safe@gnosis.io"
   },
-  "homepage": "/app",
+  "homepage": "",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build": "cross-env REACT_APP_APP_VERSION=$npm_package_version rescripts --max-old-space-size=8192 build",
@@ -45,15 +45,12 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
       "prettier --write"
     ],
     "public/**/*.ts": [
-      "eslint --fix",
       "prettier --write"
     ],
     "scripts/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
       "prettier --write"
     ]
   },
