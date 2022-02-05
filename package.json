@@ -33,7 +33,7 @@
     "prettier:check": "yarn prettier --check",
     "prettier:fix": "yarn prettier --write",
     "prettier": "prettier './src/**/*.{js,jsx,ts,tsx}'",
-    "start:cust": "rescripts start",
+    "start:cust": "cross-env REACT_APP_CHANNEL=customer rescripts start",
     "start:staff": "cross-env REACT_APP_CHANNEL=staff rescripts start",
     "start:docker": "docker-compose build && docker-compose up",
     "test": "REACT_APP_ENV=test rescripts test --env=jsdom",
