@@ -34,6 +34,8 @@ import {
   FIELD_NEW_SAFE_THRESHOLD,
   FIELD_SAFE_OWNER_ENS_LIST,
   FIELD_SAFE_OWNERS_LIST,
+  FIELD_HSBC_SAFE_OWNERS_LIST,
+  FIELD_HSBC_SAFE_OWNER_ENS_LIST,
 } from '../fields/createSafeFields'
 import { ScanQRWrapper } from 'src/components/ScanQRModal/ScanQRWrapper'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
@@ -60,6 +62,8 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
 
   const owners = createSafeFormValues[FIELD_SAFE_OWNERS_LIST]
   const ownersWithENSName = createSafeFormValues[FIELD_SAFE_OWNER_ENS_LIST]
+  const hsbcOwners = createSafeFormValues[FIELD_HSBC_SAFE_OWNERS_LIST]
+  const hsbcSafeOwnerENSList = createSafeFormValues[FIELD_HSBC_SAFE_OWNER_ENS_LIST]
   const threshold = createSafeFormValues[FIELD_NEW_SAFE_THRESHOLD]
   const maxOwnerNumber = createSafeFormValues[FIELD_MAX_OWNER_NUMBER]
 
@@ -121,6 +125,70 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
           . The new Safe will ONLY be available on <NetworkLabel />
         </Paragraph>
       </BlockWithPadding>
+      <Hairline />
+      <RowHeader>
+        <Col xs={3}>HSBC Wallet</Col>
+        <Col xs={3}>Address</Col>
+      </RowHeader>
+      <Hairline />
+      <Block margin="md" padding="md">
+        <RowHeader>
+          {hsbcOwners.map(({ hsbcNameFieldName, hsbcAddressFieldName }) => {
+            console.log('==========', hsbcAddressFieldName, hsbcNameFieldName, hsbcOwners)
+            const hasOwnerAddressError = formErrors[hsbcAddressFieldName]
+            const hsbcOwnerAddress = createSafeFormValues[hsbcAddressFieldName]
+            const hsbcOwnerName = hsbcSafeOwnerENSList[hsbcOwnerAddress] || 'HSBC Owner'
+
+            const handleScan = async (address: string, closeQrModal: () => void): Promise<void> => {
+              await getENSName(address)
+              createSafeForm.change(hsbcAddressFieldName, address)
+              closeQrModal()
+            }
+
+            return (
+              <Fragment key={hsbcAddressFieldName}>
+                <Col xs={3}>
+                  <OwnerNameField
+                    component={TextField}
+                    name={hsbcNameFieldName}
+                    value={hsbcNameFieldName}
+                    placeholder={hsbcOwnerName}
+                    text="HSBC Owner"
+                    type="text"
+                    validate={minMaxLength(0, 50)}
+                    testId="{hsbcNameFieldName}"
+                    disabled={true}
+                  />
+                </Col>
+                <Col xs={7}>
+                  <AddressInput
+                    fieldMutator={async (address) => {
+                      createSafeForm.change(hsbcAddressFieldName, address)
+                    }}
+                    inputAdornment={
+                      !hasOwnerAddressError && {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <CheckIconAddressAdornment data-testid={`${hsbcAddressFieldName}-valid-adornment`} />
+                          </InputAdornment>
+                        ),
+                      }
+                    }
+                    name={hsbcAddressFieldName}
+                    placeholder="Owner Address*"
+                    text="Owner Address"
+                    testId={hsbcAddressFieldName}
+                    disabled={true}
+                  />
+                </Col>
+                <OwnersIconsContainer xs={1} center="xs" middle="xs">
+                  <ScanQRWrapper handleScan={handleScan} testId={`${hsbcAddressFieldName}-scan-QR`} />
+                </OwnersIconsContainer>
+              </Fragment>
+            )
+          })}
+        </RowHeader>
+      </Block>
       <Hairline />
       <RowHeader>
         <Col xs={3}>NAME</Col>

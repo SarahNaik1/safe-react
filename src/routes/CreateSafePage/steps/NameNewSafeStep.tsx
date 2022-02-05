@@ -15,6 +15,7 @@ import {
   FIELD_CREATE_SUGGESTED_SAFE_NAME,
   FIELD_SAFE_OWNER_ENS_LIST,
   FIELD_SAFE_OWNERS_LIST,
+  FIELD_CUSTOMER_ACCOUNT,
 } from '../fields/createSafeFields'
 import { useStepper } from 'src/components/Stepper/stepperContext'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
@@ -80,6 +81,19 @@ function NameNewSafeStep(): ReactElement {
           new Safe will ONLY be available on <NetworkLabel />
         </Paragraph>
       </Block>
+      <label htmlFor={FIELD_CUSTOMER_ACCOUNT}>Customer Account</label>
+      <FieldContainer margin="lg">
+        <Col xs={11}>
+          <Field
+            component={TextField}
+            name={FIELD_CUSTOMER_ACCOUNT}
+            placeholder={formValues[FIELD_CUSTOMER_ACCOUNT]}
+            text="Account Number"
+            type="text"
+            testId="customer-account"
+          />
+        </Col>
+      </FieldContainer>
       <label htmlFor={FIELD_CREATE_CUSTOM_SAFE_NAME}>Name of the new Safe</label>
       <FieldContainer margin="lg">
         <Col xs={11}>

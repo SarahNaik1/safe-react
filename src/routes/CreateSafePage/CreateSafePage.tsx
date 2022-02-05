@@ -25,6 +25,8 @@ import {
   FIELD_SAFE_OWNER_ENS_LIST,
   FIELD_SAFE_OWNERS_LIST,
   SAFE_PENDING_CREATION_STORAGE_KEY,
+  FIELD_HSBC_SAFE_OWNERS_LIST,
+  FIELD_HSBC_SAFE_OWNER_ENS_LIST,
 } from './fields/createSafeFields'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
 import { providerNameSelector, shouldSwitchWalletChain, userAccountSelector } from 'src/logic/wallets/store/selectors'
@@ -67,6 +69,17 @@ function CreateSafePage(): ReactElement {
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const location = useLocation()
   const safeRandomName = useMnemonicSafeName()
+  const hsbcSafeOwners = [
+    '0xE0fF0574a54c5402fDd18c09310F3E0b2A2b4C95',
+    '0x6f9a6e832D3632f0e028EB67EA73a9f21DdCe6EE',
+    '0xf92E2cAfDF7E1C81FB08d709dC2D060FBDC7493E',
+  ]
+
+  const hsbcSafeOwners1 = [
+    { hsbcOwnerName: 'HSBC Wallet 1', hsbcAddress: '0xE0fF0574a54c5402fDd18c09310F3E0b2A2b4C95' },
+    { hsbcOwnerName: 'HSBC Wallet 2', hsbcAddress: '0x6f9a6e832D3632f0e028EB67EA73a9f21DdCe6EE' },
+    { hsbcOwnerName: 'HSBC Wallet 3', hsbcAddress: '0xf92E2cAfDF7E1C81FB08d709dC2D060FBDC7493E' },
+  ]
 
   const showSafeCreationProcess = (newSafeFormValues: CreateSafeFormValues): void => {
     saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
@@ -77,7 +90,13 @@ function CreateSafePage(): ReactElement {
 
   useEffect(() => {
     if (provider && userWalletAddress) {
-      const initialValuesFromUrl = getInitialValues(userWalletAddress, addressBook, location, safeRandomName)
+      const initialValuesFromUrl = getInitialValues(
+        userWalletAddress,
+        addressBook,
+        location,
+        safeRandomName,
+        hsbcSafeOwners,
+      )
       setInitialFormValues(initialValuesFromUrl)
     }
   }, [provider, userWalletAddress, addressBook, location, safeRandomName])
@@ -133,7 +152,13 @@ export default CreateSafePage
 const DEFAULT_THRESHOLD_VALUE = 1
 
 // initial values can be present in the URL because the Old MultiSig migration
-function getInitialValues(userAddress, addressBook, location, suggestedSafeName): CreateSafeFormValues {
+function getInitialValues(
+  userAddress,
+  addressBook,
+  location,
+  suggestedSafeName,
+  hsbcSafeOwnerList,
+): CreateSafeFormValues {
   const query = queryString.parse(location.search, { arrayFormat: 'comma' })
   const { name, owneraddresses, ownernames, threshold } = query
 
@@ -141,7 +166,6 @@ function getInitialValues(userAddress, addressBook, location, suggestedSafeName)
   const isOwnersPresentInTheUrl = !!owneraddresses
   const ownersFromUrl = Array.isArray(owneraddresses) ? owneraddresses : [owneraddresses]
   const owners = isOwnersPresentInTheUrl ? ownersFromUrl : [userAddress]
-
   // we set the owner names
   const ownersNamesFromUrl = Array.isArray(ownernames) ? ownernames : [ownernames]
   const userAddressName = [addressBook[userAddress]?.name || '']
@@ -178,6 +202,27 @@ function getInitialValues(userAddress, addressBook, location, suggestedSafeName)
     ),
     [FIELD_MAX_OWNER_NUMBER]: owners.length,
     [FIELD_NEW_SAFE_PROXY_SALT]: Date.now(),
+    [FIELD_HSBC_SAFE_OWNERS_LIST]: hsbcSafeOwnerList.map((hsbcOwner, index) => ({
+      hsbcNameFieldName: `hsbc-owner-${index}`,
+      hsbcAddressFieldName: `hsbc-address-${index}`,
+    })),
+    [FIELD_HSBC_SAFE_OWNER_ENS_LIST]: {},
+    // we set owners address values as owner-address-${index} format in the form state
+    ...hsbcSafeOwnerList.reduce(
+      (hsbcAddressFields, hsbcAddress, index) => ({
+        ...hsbcAddressFields,
+        [`hsbc-address-${index}`]: hsbcAddress,
+      }),
+      {},
+    ),
+    // we set owners name values as owner-name-${index} format in the form state
+    ...hsbcSafeOwnerList.reduce(
+      (hsbcNameFields, hsbcOwnerName, index) => ({
+        ...hsbcNameFields,
+        [`hsbc-owner-${index}`]: hsbcOwnerName,
+      }),
+      {},
+    ),
   }
 }
 
