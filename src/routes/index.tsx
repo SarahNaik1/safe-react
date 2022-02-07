@@ -20,6 +20,8 @@ import {
   LOAD_SAFE_ROUTE,
   getNetworkRootRoutes,
   TRANSACTION_ID_SLUG,
+  CUSTOMER_FLOW,
+  CREATE_CUSTOMER_CONFIRMATION,
 } from './routes'
 import { getShortName } from 'src/config'
 import { setChainId } from 'src/logic/config/utils'
@@ -31,6 +33,8 @@ const Welcome = React.lazy(() => import('./welcome/Welcome'))
 const CreateSafePage = React.lazy(() => import('./CreateSafePage/CreateSafePage'))
 const LoadSafePage = React.lazy(() => import('./LoadSafePage/LoadSafePage'))
 const SafeContainer = React.lazy(() => import('./safe/container'))
+const CustomerFlow = React.lazy(() => import('./CustomerFlow/CustomerFlow'))
+const CreateSafeConfrmation = React.lazy(() => import('./CreateSafeConfrmation/CreateSafeConfrmation'))
 
 const Routes = (): React.ReactElement => {
   const location = useLocation()
@@ -126,6 +130,8 @@ const Routes = (): React.ReactElement => {
       <Route component={Welcome} exact path={WELCOME_ROUTE} />
 
       <Route component={CreateSafePage} exact path={OPEN_SAFE_ROUTE} />
+      <Route component={CustomerFlow} exact path={CUSTOMER_FLOW} />
+      <Route component={CreateSafeConfrmation} exact path={CREATE_CUSTOMER_CONFIRMATION} />
 
       <Route
         path={ADDRESSED_ROUTE}
