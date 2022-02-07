@@ -68,6 +68,7 @@ const CardContentContainer = styled.div`
 
 const StyledButton = styled(Button)`
   background-color: #ca0808 !important;
+  border-radius: 0px !important;
 `
 
 const CardDescriptionContainer = styled.div`
