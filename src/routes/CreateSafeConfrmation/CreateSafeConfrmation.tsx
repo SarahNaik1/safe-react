@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import Page from 'src/components/layout/Page'
 import Block from 'src/components/layout/Block'
 import Link from 'src/components/layout/Link'
-import { CREATE_CUSTOMER_CONFIRMATION } from 'src/routes/routes'
-const CustomerFlow = () => {
+import { ROOT_ROUTE } from 'src/routes/routes'
+const CreateSafeConfrmation = () => {
   return (
     <Page>
       <Block>
@@ -15,27 +15,17 @@ const CustomerFlow = () => {
             {/* Create Safe */}
             <CardContentContainer>
               <Title size="sm" strong withoutMargin>
-                HSBC Digital Assets Safe
+                We will create your safe
               </Title>
               <CardDescriptionContainer>
-                <Text size="xl">Create a new Gnosis Safe with HSBC .</Text>
+                <Text size="xl">We will notify you when the safe has been created.</Text>
                 <Text size="xl">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque semper luctus sem et mollis.
                   Nullam at mollis est. Duis pellentesque feugiat pellentesque. Donec enim ipsum, commodo tristique
-                  dapibus ut, lobortis eu felis. Nunc eu orci vel ipsum convallis aliquam. Vivamus non nulla lorem.
-                  Nulla et lorem at quam gravida dictum. Donec tristique ac turpis fermentum mollis..
                 </Text>
               </CardDescriptionContainer>
-              <StyledButton
-                size="lg"
-                color="primary"
-                variant="contained"
-                component={Link}
-                to={CREATE_CUSTOMER_CONFIRMATION}
-              >
-                <Text size="xl" color="white">
-                  Create Gnosis Safe with HSBC
-                </Text>
+              <StyledButton size="lg" color="primary" variant="contained" component={Link} to={ROOT_ROUTE}>
+                <Text size="xl">Back to my accounts</Text>
               </StyledButton>
             </CardContentContainer>
           </StyledCard>
@@ -45,7 +35,7 @@ const CustomerFlow = () => {
   )
 }
 
-export default CustomerFlow
+export default CreateSafeConfrmation
 const CardsContainer = styled.div`
   display: flex;
   height: 300px;
@@ -67,7 +57,7 @@ const CardContentContainer = styled.div`
 `
 
 const StyledButton = styled(Button)`
-  background-color: #ca0808 !important;
+  background-color: white !important;
 `
 
 const CardDescriptionContainer = styled.div`
