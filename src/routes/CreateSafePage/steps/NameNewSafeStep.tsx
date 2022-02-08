@@ -15,10 +15,12 @@ import {
   FIELD_CREATE_SUGGESTED_SAFE_NAME,
   FIELD_SAFE_OWNER_ENS_LIST,
   FIELD_SAFE_OWNERS_LIST,
+  FIELD_CUSTOMER_ACCOUNT,
 } from '../fields/createSafeFields'
 import { useStepper } from 'src/components/Stepper/stepperContext'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { removeTld, reverseENSLookup } from 'src/logic/wallets/getWeb3'
+import { STUB_HSBC_CUSTOMERS } from '../../../stubs/CreateSafePageStubs'
 
 export const nameNewSafeStepLabel = 'Name'
 
@@ -73,20 +75,26 @@ function NameNewSafeStep(): ReactElement {
 
   return (
     <BlockWithPadding data-testid={'create-safe-name-step'}>
-      <Block margin="md">
-        <Paragraph color="primary" noMargin size="lg">
-          You are about to create a new Gnosis Safe wallet with one or more owners. First, let&apos;s give your new
-          wallet a name. This name is only stored locally and will never be shared with Gnosis or any third parties. The
-          new Safe will ONLY be available on <NetworkLabel />
-        </Paragraph>
-      </Block>
+      <label htmlFor={FIELD_CUSTOMER_ACCOUNT}>Customer account number</label>
+      <FieldContainer margin="lg">
+        <Col xs={11}>
+          <Field
+            component={TextField}
+            name={FIELD_CUSTOMER_ACCOUNT}
+            placeholder="000-000000-000"
+            text="Account Number"
+            type="text"
+            testId="customer-account"
+          />
+        </Col>
+      </FieldContainer>
       <label htmlFor={FIELD_CREATE_CUSTOM_SAFE_NAME}>Name of the new Safe</label>
       <FieldContainer margin="lg">
         <Col xs={11}>
           <Field
             component={TextField}
             name={FIELD_CREATE_CUSTOM_SAFE_NAME}
-            placeholder={formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME]}
+            placeholder="Customer name"
             text="Safe name"
             type="text"
             testId="create-safe-name-field"

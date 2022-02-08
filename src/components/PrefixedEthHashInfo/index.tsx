@@ -8,7 +8,9 @@ import { parsePrefixedAddress } from 'src/utils/prefixedAddress'
 type Props = Omit<Parameters<typeof EthHashInfo>[0], 'shouldShowShortName' | 'shouldCopyShortName'>
 
 const PrefixedEthHashInfo = ({ hash, ...rest }: Props): ReactElement => {
-  const showChainPrefix = useSelector(showShortNameSelector)
+  // Removed chain prefix
+  const showChainPrefix = false
+  //const showChainPrefix = useSelector(showShortNameSelector)
   const copyChainPrefix = useSelector(copyShortNameSelector)
   const { address } = parsePrefixedAddress(hash)
 
