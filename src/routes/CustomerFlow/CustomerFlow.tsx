@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Page from 'src/components/layout/Page'
 import Block from 'src/components/layout/Block'
 import Link from 'src/components/layout/Link'
-import { CREATE_CUSTOMER_CONFIRMATION } from 'src/routes/routes'
+import { CREATE_CUSTOMER_SAFE_PAGE } from 'src/routes/routes'
 const CustomerFlow = () => {
   return (
     <Page>
@@ -31,7 +31,7 @@ const CustomerFlow = () => {
                 color="primary"
                 variant="contained"
                 component={Link}
-                to={CREATE_CUSTOMER_CONFIRMATION}
+                to={CREATE_CUSTOMER_SAFE_PAGE}
               >
                 <Text size="xl" color="white">
                   Create Gnosis Safe with HSBC
