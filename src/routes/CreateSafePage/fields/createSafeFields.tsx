@@ -8,10 +8,18 @@ export const FIELD_NEW_SAFE_PROXY_SALT = 'safeCreationSalt'
 export const FIELD_NEW_SAFE_GAS_LIMIT = 'gasLimit'
 export const FIELD_NEW_SAFE_GAS_PRICE = 'gasPrice'
 export const FIELD_NEW_SAFE_CREATION_TX_HASH = 'safeCreationTxHash'
+export const FIELD_CUSTOMER_ACCOUNT = 'customerAccount'
+export const FIELD_HSBC_SAFE_OWNERS_LIST = 'hsbcOwners'
+export const FIELD_HSBC_SAFE_OWNER_ENS_LIST = 'hsbcSafeOwnerENSList'
 
 export type OwnerFieldItem = {
   nameFieldName: string
   addressFieldName: string
+}
+
+export type HsbcOwnerFieldItem = {
+  hsbcNameFieldName: string
+  hsbcAddressFieldName: string
 }
 
 export type CreateSafeFormValues = {
@@ -25,6 +33,9 @@ export type CreateSafeFormValues = {
   [FIELD_NEW_SAFE_GAS_LIMIT]: number
   [FIELD_NEW_SAFE_GAS_PRICE]: string
   [FIELD_NEW_SAFE_CREATION_TX_HASH]?: string
+  [FIELD_CUSTOMER_ACCOUNT]: string
+  [FIELD_HSBC_SAFE_OWNERS_LIST]: Array<HsbcOwnerFieldItem>
+  [FIELD_HSBC_SAFE_OWNER_ENS_LIST]: Record<string, string>
 }
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'NEW_SAFE_PENDING_CREATION_STORAGE_KEY'

@@ -19,6 +19,7 @@ import {
   FIELD_NEW_SAFE_THRESHOLD,
   FIELD_SAFE_OWNER_ENS_LIST,
   FIELD_SAFE_OWNERS_LIST,
+  FIELD_HSBC_SAFE_OWNERS_LIST,
 } from '../fields/createSafeFields'
 import { getExplorerInfo, getNativeCurrency } from 'src/config'
 import { useEstimateSafeCreationGas } from 'src/logic/hooks/useEstimateSafeCreationGas'
@@ -47,11 +48,13 @@ function ReviewNewSafeStep(): ReactElement | null {
   const safeName = createSafeFormValues[FIELD_CREATE_CUSTOM_SAFE_NAME] || defaultSafeValue
   const threshold = createSafeFormValues[FIELD_NEW_SAFE_THRESHOLD]
   const owners = createSafeFormValues[FIELD_SAFE_OWNERS_LIST]
+  const hsbcOwners = createSafeFormValues[FIELD_HSBC_SAFE_OWNERS_LIST]
   const ownersWithENSName = createSafeFormValues[FIELD_SAFE_OWNER_ENS_LIST]
   const numberOfOwners = owners.length
+  const totalOwners = owners.length + hsbcOwners.length
   const safeCreationSalt = createSafeFormValues[FIELD_NEW_SAFE_PROXY_SALT]
   const ownerAddresses = owners.map(({ addressFieldName }) => createSafeFormValues[addressFieldName])
-
+  const hsbcOwnerAddresses = hsbcOwners.map(({ addressFieldName }) => createSafeFormValues[addressFieldName])
   const { gasCostFormatted, gasLimit, gasPrice } = useEstimateSafeCreationGas({
     addresses: ownerAddresses,
     numOwners: numberOfOwners,
@@ -98,7 +101,7 @@ function ReviewNewSafeStep(): ReactElement | null {
               weight="bolder"
               data-testid={'create-safe-review-threshold-label'}
             >
-              {`${threshold} out of ${numberOfOwners} owners`}
+              {`${threshold} out of ${totalOwners} owners`}
             </Paragraph>
           </Block>
         </DetailsContainer>
@@ -107,7 +110,7 @@ function ReviewNewSafeStep(): ReactElement | null {
         <TableContainer>
           <TitleContainer>
             <Paragraph color="primary" noMargin size="lg">
-              {`${numberOfOwners} Safe owners`}
+              {`${numberOfOwners} Customer safe owners`}
             </Paragraph>
           </TitleContainer>
           <Hairline />

@@ -34,6 +34,8 @@ import {
   FIELD_NEW_SAFE_THRESHOLD,
   FIELD_SAFE_OWNER_ENS_LIST,
   FIELD_SAFE_OWNERS_LIST,
+  FIELD_HSBC_SAFE_OWNERS_LIST,
+  FIELD_HSBC_SAFE_OWNER_ENS_LIST,
 } from '../fields/createSafeFields'
 import { ScanQRWrapper } from 'src/components/ScanQRModal/ScanQRWrapper'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
@@ -60,6 +62,8 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
 
   const owners = createSafeFormValues[FIELD_SAFE_OWNERS_LIST]
   const ownersWithENSName = createSafeFormValues[FIELD_SAFE_OWNER_ENS_LIST]
+  const hsbcOwners = createSafeFormValues[FIELD_HSBC_SAFE_OWNERS_LIST]
+  const hsbcSafeOwnerENSList = createSafeFormValues[FIELD_HSBC_SAFE_OWNER_ENS_LIST]
   const threshold = createSafeFormValues[FIELD_NEW_SAFE_THRESHOLD]
   const maxOwnerNumber = createSafeFormValues[FIELD_MAX_OWNER_NUMBER]
 
@@ -81,7 +85,8 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
     const updatedMaxOwnerNumbers = maxOwnerNumber - 1
     createSafeForm.change(FIELD_MAX_OWNER_NUMBER, updatedMaxOwnerNumbers)
 
-    const hasToUpdateThreshold = threshold > ownersUpdated.length
+    // Updated Threshold validation to include hsbc wallets
+    const hasToUpdateThreshold = threshold > ownersUpdated.length + hsbcOwners.length
     if (hasToUpdateThreshold) {
       createSafeForm.change(FIELD_NEW_SAFE_THRESHOLD, threshold - 1)
     }
@@ -98,29 +103,50 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
 
   return (
     <>
-      <BlockWithPadding data-testid={'create-safe-owners-confirmation-step'}>
-        <ParagraphWithMargin color="primary" noMargin size="lg">
-          Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet details,
-          but you are free to change this to a different owner.
-        </ParagraphWithMargin>
-        <Paragraph color="primary" size="lg">
-          Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
-          transaction before it gets executed. In general, the more confirmations required, the more secure your Safe
-          is.
-          <StyledLink
-            href="https://help.gnosis-safe.io/en/articles/4772567-what-gnosis-safe- setup-should-i-use"
-            target="_blank"
-            rel="noreferrer"
-            title="Learn about which Safe setup to use"
-          >
-            <Text size="xl" as="span" color="primary">
-              Learn about which Safe setup to use
-            </Text>
-            <Icon size="sm" type="externalLink" color="primary" />
-          </StyledLink>
-          . The new Safe will ONLY be available on <NetworkLabel />
-        </Paragraph>
-      </BlockWithPadding>
+      <Block margin="md" padding="md">
+        <RowHeader>
+          {hsbcOwners.map(({ hsbcNameFieldName, hsbcAddressFieldName }) => {
+            const hasOwnerAddressError = formErrors[hsbcAddressFieldName]
+            const hsbcOwnerAddress = createSafeFormValues[hsbcAddressFieldName]
+            const hsbcOwnerName = hsbcSafeOwnerENSList[hsbcOwnerAddress] || 'HSBC Owner'
+
+            const handleScan = async (address: string, closeQrModal: () => void): Promise<void> => {
+              await getENSName(address)
+              createSafeForm.change(hsbcAddressFieldName, address)
+              closeQrModal()
+            }
+
+            return (
+              <Fragment key={hsbcAddressFieldName}>
+                <ParagraphWithMargin color="primary" noMargin size="lg">
+                  {createSafeFormValues[hsbcNameFieldName]}
+                </ParagraphWithMargin>
+                <Col xs={12}>
+                  <AddressInput
+                    fieldMutator={async (address) => {
+                      createSafeForm.change(hsbcAddressFieldName, address)
+                    }}
+                    inputAdornment={
+                      !hasOwnerAddressError && {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <CheckIconAddressAdornment data-testid={`${hsbcAddressFieldName}-valid-adornment`} />
+                          </InputAdornment>
+                        ),
+                      }
+                    }
+                    name={hsbcAddressFieldName}
+                    placeholder="Owner Address*"
+                    text="Owner Address"
+                    testId={hsbcAddressFieldName}
+                    disabled={true}
+                  />
+                </Col>
+              </Fragment>
+            )
+          })}
+        </RowHeader>
+      </Block>
       <Hairline />
       <RowHeader>
         <Col xs={3}>NAME</Col>
@@ -213,9 +239,9 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
                 component={SelectField}
                 data-testid="threshold-selector-input"
                 name={FIELD_NEW_SAFE_THRESHOLD}
-                validate={composeValidators(required, minValue(1))}
+                validate={composeValidators(required, minValue(2))}
               >
-                {owners.map((_, option) => (
+                {[...owners, ...hsbcOwners].map((_, option) => (
                   <MenuItem
                     key={`threshold-selector-option-${option}`}
                     value={option + 1}
@@ -227,7 +253,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
               </Field>
             </Col>
             <Col xs={11}>
-              <StyledParagraph noMargin>out of {owners.length} owner(s)</StyledParagraph>
+              <StyledParagraph noMargin>out of {owners.length + hsbcOwners.length} owner(s)</StyledParagraph>
             </Col>
           </OwnerContainer>
         </BlockWithPadding>
@@ -245,6 +271,7 @@ export const ownersAndConfirmationsNewSafeStepValidations = (values: {
   const errors = {}
 
   const owners = values[FIELD_SAFE_OWNERS_LIST]
+  const hsbcOwners = values[FIELD_HSBC_SAFE_OWNERS_LIST]
   const threshold = values[FIELD_NEW_SAFE_THRESHOLD]
   const addresses = owners.map(({ addressFieldName }) => values[addressFieldName])
 
@@ -258,7 +285,7 @@ export const ownersAndConfirmationsNewSafeStepValidations = (values: {
     }
   })
 
-  const isValidThreshold = !!threshold && threshold <= owners.length
+  const isValidThreshold = !!threshold && threshold <= owners.length + hsbcOwners.length
   if (!isValidThreshold) {
     errors[FIELD_NEW_SAFE_THRESHOLD] = THRESHOLD_ERROR
   }

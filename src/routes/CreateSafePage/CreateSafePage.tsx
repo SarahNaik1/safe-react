@@ -25,6 +25,8 @@ import {
   FIELD_SAFE_OWNER_ENS_LIST,
   FIELD_SAFE_OWNERS_LIST,
   SAFE_PENDING_CREATION_STORAGE_KEY,
+  FIELD_HSBC_SAFE_OWNERS_LIST,
+  FIELD_HSBC_SAFE_OWNER_ENS_LIST,
 } from './fields/createSafeFields'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
 import { providerNameSelector, shouldSwitchWalletChain, userAccountSelector } from 'src/logic/wallets/store/selectors'
@@ -37,6 +39,7 @@ import ReviewNewSafeStep, { reviewNewSafeStepLabel } from './steps/ReviewNewSafe
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import SafeCreationProcess from './components/SafeCreationProcess'
 import SelectWalletAndNetworkStep, { selectWalletAndNetworkStepLabel } from './steps/SelectWalletAndNetworkStep'
+import { STUB_HSBC_SAFE_OWNERS } from '../../stubs/CreateSafePageStubs'
 
 function CreateSafePage(): ReactElement {
   const [safePendingToBeCreated, setSafePendingToBeCreated] = useState<CreateSafeFormValues>()
@@ -77,7 +80,13 @@ function CreateSafePage(): ReactElement {
 
   useEffect(() => {
     if (provider && userWalletAddress) {
-      const initialValuesFromUrl = getInitialValues(userWalletAddress, addressBook, location, safeRandomName)
+      const initialValuesFromUrl = getInitialValues(
+        userWalletAddress,
+        addressBook,
+        location,
+        safeRandomName,
+        STUB_HSBC_SAFE_OWNERS,
+      )
       setInitialFormValues(initialValuesFromUrl)
     }
   }, [provider, userWalletAddress, addressBook, location, safeRandomName])
@@ -130,10 +139,11 @@ function CreateSafePage(): ReactElement {
 
 export default CreateSafePage
 
-const DEFAULT_THRESHOLD_VALUE = 1
+// updated default threshold to 2
+const DEFAULT_THRESHOLD_VALUE = 2
 
 // initial values can be present in the URL because the Old MultiSig migration
-function getInitialValues(userAddress, addressBook, location, suggestedSafeName): CreateSafeFormValues {
+function getInitialValues(userAddress, addressBook, location, suggestedSafeName, hsbcSafeOwners): CreateSafeFormValues {
   const query = queryString.parse(location.search, { arrayFormat: 'comma' })
   const { name, owneraddresses, ownernames, threshold } = query
 
@@ -141,15 +151,18 @@ function getInitialValues(userAddress, addressBook, location, suggestedSafeName)
   const isOwnersPresentInTheUrl = !!owneraddresses
   const ownersFromUrl = Array.isArray(owneraddresses) ? owneraddresses : [owneraddresses]
   const owners = isOwnersPresentInTheUrl ? ownersFromUrl : [userAddress]
-
   // we set the owner names
   const ownersNamesFromUrl = Array.isArray(ownernames) ? ownernames : [ownernames]
   const userAddressName = [addressBook[userAddress]?.name || '']
   const ownerNames = isOwnersPresentInTheUrl ? ownersNamesFromUrl : userAddressName
 
   const thresholdFromURl = Number(threshold)
+  // Updated Threshold Validation to include HSBC Wallets
   const isValidThresholdInTheUrl =
-    threshold && !Number.isNaN(threshold) && thresholdFromURl <= owners.length && thresholdFromURl > 0
+    threshold &&
+    !Number.isNaN(threshold) &&
+    thresholdFromURl <= owners.length + hsbcSafeOwners.length &&
+    thresholdFromURl > 0
 
   return {
     [FIELD_CREATE_SUGGESTED_SAFE_NAME]: suggestedSafeName,
@@ -178,6 +191,32 @@ function getInitialValues(userAddress, addressBook, location, suggestedSafeName)
     ),
     [FIELD_MAX_OWNER_NUMBER]: owners.length,
     [FIELD_NEW_SAFE_PROXY_SALT]: Date.now(),
+    // Added HSBC Wallets to form state
+    [FIELD_HSBC_SAFE_OWNERS_LIST]: hsbcSafeOwners.map((hsbcOwner, index) => ({
+      hsbcNameFieldName: `hsbc-owner-${index}`,
+      hsbcAddressFieldName: `hsbc-address-${index}`,
+    })),
+    [FIELD_HSBC_SAFE_OWNER_ENS_LIST]: {},
+    // we set hsbc owners address values as hsbc-address-${index} format in the form state
+    ...hsbcSafeOwners
+      .map((hsbcSafeOwner) => hsbcSafeOwner.address)
+      .reduce(
+        (hsbcAddressFields, hsbcAddress, index) => ({
+          ...hsbcAddressFields,
+          [`hsbc-address-${index}`]: hsbcAddress,
+        }),
+        {},
+      ),
+    // we set owners name values as hsbc-owner-${index} format in the form state
+    ...hsbcSafeOwners
+      .map((hsbcSafeOwner) => hsbcSafeOwner.name)
+      .reduce(
+        (hsbcNameFields, hsbcOwnerName, index) => ({
+          ...hsbcNameFields,
+          [`hsbc-owner-${index}`]: hsbcOwnerName,
+        }),
+        {},
+      ),
   }
 }
 
